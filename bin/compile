@@ -34,6 +34,9 @@ curl $nginx_url -s -o - | tar xzf - -C $build_dir/vendor
 status "Adding boot script"
 cp $bp_dir/bin/boot.sh $build_dir
 
+status "Creating Procfile"
+echo "web: exec sh boot.sh" > $build_dir/Procfile
+
 status "Copying configs"
 mkdir -p $build_dir/config
 cp $bp_dir/config/htpasswd.rb $build_dir/config

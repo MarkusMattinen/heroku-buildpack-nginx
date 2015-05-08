@@ -60,6 +60,8 @@ http {
       break;
     }
 
+    port_in_redirect off;
+
     location / {
       expires off;
       try_files $uri $uri/ <%= ENV["REDIRECT_NOT_FOUND_TO"] || '' %> =404;

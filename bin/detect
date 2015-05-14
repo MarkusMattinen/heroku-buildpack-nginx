@@ -1,7 +1,15 @@
 #!/usr/bin/env bash
 # bin/detect <build-dir>
 
-if [ -f $1/index.html ]; then
+if [ -f $1/.env ]; then
+  source $1/.env
+fi
+
+if [ -z "$ROOT_DIRECTORY" ]; then
+  ROOT_DIRECTORY="."
+fi
+
+if [ -f "$1/$ROOT_DIRECTORY/index.html" ]; then
   echo "NGINX" && exit 0
 else
   echo "no" && exit 1

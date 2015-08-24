@@ -8,6 +8,7 @@ build_dir=$1
 cache_dir=$2
 env_dir=$3
 bp_dir=$(cd $(dirname $0); cd ..; pwd)
+global_cache_dir=/global_cache
 
 # Fix leak
 unset GIT_DIR
@@ -29,13 +30,18 @@ trap cat_npm_debug_log ERR
 
 nginx_pkg_name=heroku-nginx-1.6.0.tar.gz
 nginx_url=https://s3.amazonaws.com/devmynd-github/$nginx_pkg_name
+nginx_cache_path="$cache_dir/$nginx_pkg_name"
 
-if [ ! -f "$cache_dir/$nginx_pkg_name" ]; then
+if [ -d "$global_cache_dir" ]; then
+  nginx_cache_path="$global_cache_dir/$nginx_pkg_name"
+fi
+
+if [ ! -f "$nginx_cache_path" ]; then
   status "Downloading and installing nginx (first run)"
-  curl $nginx_url -s -o - | tee $cache_dir/$nginx_pkg_name | tar xzf - -C $build_dir/vendor
+  curl $nginx_url -s -o - | tee $nginx_cache_path | tar xzf - -C $build_dir/vendor
 else
   status "Installing nginx"
-  tar xzf $cache_dir/$nginx_pkg_name -C $build_dir/vendor
+  tar xzf $nginx_cache_path -C $build_dir/vendor
 fi
 
 status "Adding boot script"

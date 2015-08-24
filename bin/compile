@@ -27,9 +27,16 @@ fi
 # Output npm debug info on error
 trap cat_npm_debug_log ERR
 
-status "Downloading and installing nginx"
-nginx_url=https://s3.amazonaws.com/devmynd-github/heroku-nginx-1.6.0.tar.gz
-curl $nginx_url -s -o - | tar xzf - -C $build_dir/vendor
+nginx_pkg_name=heroku-nginx-1.6.0.tar.gz
+nginx_url=https://s3.amazonaws.com/devmynd-github/$nginx_pkg_name
+
+if [ ! -f "$cache_dir/$nginx_pkg_name" ]; then
+  status "Downloading and installing nginx (first run)"
+  curl $nginx_url -s -o - | tee $cache_dir/$nginx_pkg_name | tar xzf - -C $build_dir/vendor
+else
+  status "Installing nginx"
+  tar xzf $cache_dir/$nginx_pkg_name -C $build_dir/vendor
+fi
 
 status "Adding boot script"
 cp $bp_dir/bin/boot.sh $build_dir

@@ -11,6 +11,9 @@ fi
 
 if [ -f "$1/$ROOT_DIRECTORY/index.html" ]; then
   echo "NGINX" && exit 0
+elif [ -f $1/.nginx ]; then
+  echo "nginx"
+  exit 0
 else
   echo "no" && exit 1
 fi
